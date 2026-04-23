@@ -20,6 +20,9 @@ const lastCodeElement = document.querySelector("#lastCode");
 const responseSpeedElement = document.querySelector("#responseSpeed");
 const responseMetaElement = document.querySelector("#responseMeta");
 const responseSpeedCardElement = document.querySelector("#responseSpeedCard");
+const nkroLevelElement = document.querySelector("#nkroLevel");
+const nkroMetaElement = document.querySelector("#nkroMeta");
+const nkroCardElement = document.querySelector("#nkroCard");
 const lastKeyLabelElement = document.querySelector("#lastKeyLabel");
 const lastKeyMetaElement = document.querySelector("#lastKeyMeta");
 const activeHintElement = document.querySelector("#activeHint");
@@ -62,6 +65,8 @@ let totalPresses = 0;
 let responseSampleCount = 0;
 let responseAverage = 0;
 let pendingResponseFrame = 0;
+let maxSimultaneousPressed = 0;
+let maxPrintableSimultaneousPressed = 0;
 
 let inspectionRunning = false;
 let inspectionStartedAt = 0;
@@ -74,6 +79,70 @@ const anomalyStats = new Map();
 
 const rapidThresholdMs = 45;
 const stuckThresholdMs = 3200;
+const nkroThreshold = 10;
+const sixKroThreshold = 6;
+
+function isPrintableCode(code) {
+  return (
+    code.startsWith("Key")
+    || code.startsWith("Digit")
+    || code === "Space"
+    || code.startsWith("Numpad")
+    || code === "Minus"
+    || code === "Equal"
+    || code === "BracketLeft"
+    || code === "BracketRight"
+    || code === "Backslash"
+    || code === "Semicolon"
+    || code === "Quote"
+    || code === "Comma"
+    || code === "Period"
+    || code === "Slash"
+    || code === "Backquote"
+  );
+}
+
+function getPrintableActiveCount() {
+  let count = 0;
+  pressedCodes.forEach((code) => {
+    if (isPrintableCode(code)) {
+      count += 1;
+    }
+  });
+  return count;
+}
+
+function renderNkroState() {
+  if (!nkroLevelElement || !nkroMetaElement || !nkroCardElement) {
+    return;
+  }
+
+  let levelKey = "nkroLevel1";
+  let statusKey = "nkroStatusBasic";
+  let cardClass = "is-basic";
+
+  if (maxPrintableSimultaneousPressed >= nkroThreshold) {
+    levelKey = "nkroLevelNkro";
+    statusKey = "nkroStatusPass";
+    cardClass = "is-pass";
+  } else if (maxPrintableSimultaneousPressed >= sixKroThreshold) {
+    levelKey = "nkroLevel6";
+    statusKey = "nkroStatusGood";
+    cardClass = "is-good";
+  } else if (maxPrintableSimultaneousPressed >= 2) {
+    levelKey = "nkroLevel2";
+    statusKey = "nkroStatusLimited";
+    cardClass = "is-limited";
+  }
+
+  nkroLevelElement.textContent = t(levelKey);
+  nkroMetaElement.textContent = t(statusKey, {
+    max: maxSimultaneousPressed,
+    printable: maxPrintableSimultaneousPressed,
+  });
+  nkroCardElement.classList.remove("is-basic", "is-limited", "is-good", "is-pass");
+  nkroCardElement.classList.add(cardClass);
+}
 
 function getAnomalyRecord(code) {
   if (!anomalyStats.has(code)) {
@@ -210,8 +279,11 @@ function resetInspectionSession() {
   stuckTimers.clear();
 
   anomalyStats.clear();
+  maxSimultaneousPressed = 0;
+  maxPrintableSimultaneousPressed = 0;
   renderAnomalyList();
   renderInspectionStatus();
+  renderNkroState();
 }
 
 function buildReport() {
@@ -225,6 +297,18 @@ function buildReport() {
     generatedAt: new Date().toISOString(),
     totalPresses,
     responseAverageMs: Number(responseAverage.toFixed(2)),
+    nkro: {
+      maxSimultaneousPressed,
+      maxPrintableSimultaneousPressed,
+      estimatedLevel:
+        maxPrintableSimultaneousPressed >= nkroThreshold
+          ? "NKRO"
+          : maxPrintableSimultaneousPressed >= sixKroThreshold
+            ? "6KRO"
+            : maxPrintableSimultaneousPressed >= 2
+              ? "2KRO"
+              : "1KRO",
+    },
     inspection: {
       running: inspectionRunning,
       startedAt: inspectionStartedAt ? new Date(inspectionStartedAt).toISOString() : null,
@@ -270,6 +354,11 @@ function exportTextReport() {
     t("reportGeneratedAt", { value: report.generatedAt }),
     t("reportTotalPresses", { value: report.totalPresses }),
     t("reportAverageResponse", { value: report.responseAverageMs }),
+    t("reportNkro", {
+      level: report.nkro.estimatedLevel,
+      max: report.nkro.maxSimultaneousPressed,
+      printable: report.nkro.maxPrintableSimultaneousPressed,
+    }),
     t("reportInspection", {
       tested: report.inspection.testedKeys,
       required: report.inspection.requiredKeys,
@@ -552,6 +641,8 @@ function refreshStaticText() {
     });
   }
 
+  renderNkroState();
+
   if (eventLogElement.querySelector(".placeholder")) {
     eventLogElement.innerHTML = `<li class="placeholder">${t("eventLogPlaceholder")}</li>`;
   }
@@ -713,7 +804,9 @@ function setLastEvent(event, type) {
   const resolvedCode = resolveCode(event) || event.code;
   const label = formatKeyLabel(event);
   lastKeyLabelElement.textContent = label;
-  lastCodeElement.textContent = resolvedCode || "-";
+  if (lastCodeElement) {
+    lastCodeElement.textContent = resolvedCode || "-";
+  }
   lastKeyMetaElement.textContent = `${localizeEventType(type)} / ${resolvedCode || t("codeValueUnknown")} / ${label} / ${formatLocation(event.location)}`;
 }
 
@@ -880,6 +973,8 @@ function handleKeydown(event) {
   }
 
   pressedCodes.add(code);
+  maxSimultaneousPressed = Math.max(maxSimultaneousPressed, pressedCodes.size);
+  maxPrintableSimultaneousPressed = Math.max(maxPrintableSimultaneousPressed, getPrintableActiveCount());
   scheduleFallbackRelease(code);
   markInspectedCode(code);
   setLastEvent(event, event.repeat ? "repeat" : "keydown");
@@ -888,6 +983,7 @@ function handleKeydown(event) {
   updateLockState(event);
   appendLog(event, event.repeat ? "repeat" : "down");
   renderAnomalyList();
+  renderNkroState();
 }
 
 function handleKeyup(event) {
@@ -903,6 +999,7 @@ function handleKeyup(event) {
   updateActiveKeys();
   updateLockState(event);
   appendLog(event, "up");
+  renderNkroState();
 }
 
 function resetPressedState() {
@@ -919,6 +1016,7 @@ function resetPressedState() {
 
   pressedCodes.clear();
   updateActiveKeys();
+  renderNkroState();
 }
 
 function resetDetectedState() {
@@ -978,3 +1076,4 @@ refreshStaticText();
 updateActiveKeys();
 renderInspectionStatus();
 renderAnomalyList();
+renderNkroState();

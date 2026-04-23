@@ -57,12 +57,64 @@
           <p class="hero-text" id="heroText" data-i18n="heroText">
             按下键盘任意按键，页面会同步显示物理位置、事件状态、按下次数和最近操作记录，适合排查失灵、连击和映射异常。
           </p>
+          <section class="inspection-embed">
+            <div class="panel-head panel-head-compact">
+              <h2 id="inspectionTitle" data-i18n="inspectionTitle">体检任务中心</h2>
+              <p id="inspectionHint" data-i18n="inspectionHint">优先关注完整覆盖与异常检测</p>
+            </div>
+            <div class="inspection-tools" aria-live="polite">
+              <p class="inspection-title" id="inspectionToolsTitle" data-i18n="inspectionToolsTitle">完整体检与导出</p>
+              <div class="inspection-actions">
+                <button id="startInspectionButton" type="button" data-i18n="startInspectionButton">开始体检</button>
+                <button id="resetSessionButton" type="button" data-i18n="resetSessionButton">重置会话</button>
+              </div>
+              <div class="inspection-actions">
+                <button id="exportJsonButton" type="button" data-i18n="exportJsonButton">导出 JSON</button>
+                <button id="exportTextButton" type="button" data-i18n="exportTextButton">导出文本报告</button>
+              </div>
+              <p class="inspection-meta" id="inspectionProgress">Inspection status: 0/0 (0%)</p>
+              <p class="inspection-meta" id="inspectionRemaining">Missing keys: -</p>
+              <div class="anomaly-box">
+                <p class="inspection-title" id="anomalyTitle" data-i18n="anomalyTitle">异常检测</p>
+                <ul id="anomalyList" class="anomaly-list">
+                  <li class="placeholder" id="anomalyPlaceholder" data-i18n="anomalyPlaceholder">暂无异常</li>
+                </ul>
+              </div>
+            </div>
+          </section>
         </div>
         <div class="hero-card">
           <div class="card-label" id="lastEventLabel" data-i18n="lastEventLabel">Last Event</div>
           <div class="last-key" id="lastKeyLabel">等待输入</div>
           <div class="last-key-meta" id="lastKeyMeta">code / key / location</div>
           <div class="active-hint" id="activeHint">当前没有按住的按键</div>
+          <div class="hero-stats-wrap">
+            <div class="stats-grid">
+              <article>
+                <span class="stat-label" id="totalPressesLabel" data-i18n="totalPressesLabel">按下总次数</span>
+                <strong id="totalPresses">0</strong>
+              </article>
+              <article id="responseSpeedCard">
+                <span class="stat-label" id="responseSpeedLabel" data-i18n="responseSpeedLabel">响应速度</span>
+                <strong id="responseSpeed">-</strong>
+                <small class="stat-meta" id="responseMeta">等待输入</small>
+              </article>
+            </div>
+            <div class="lock-grid">
+              <div class="lock-item" data-lock="CapsLock">
+                <span>Caps Lock</span>
+                <b>OFF</b>
+              </div>
+              <div class="lock-item" data-lock="NumLock">
+                <span>Num Lock</span>
+                <b>OFF</b>
+              </div>
+              <div class="lock-item" data-lock="ScrollLock">
+                <span>Scroll Lock</span>
+                <b>OFF</b>
+              </div>
+            </div>
+          </div>
         </div>
       </header>
 
@@ -216,72 +268,6 @@
           </div>
         </section>
 
-        <section class="panel panel-inspection">
-          <div class="panel-head">
-            <h2 id="inspectionTitle" data-i18n="inspectionTitle">体检任务中心</h2>
-            <p id="inspectionHint" data-i18n="inspectionHint">优先关注完整覆盖与异常检测</p>
-          </div>
-          <div class="inspection-tools" aria-live="polite">
-            <p class="inspection-title" id="inspectionToolsTitle" data-i18n="inspectionToolsTitle">完整体检与导出</p>
-            <div class="inspection-actions">
-              <button id="startInspectionButton" type="button" data-i18n="startInspectionButton">开始体检</button>
-              <button id="resetSessionButton" type="button" data-i18n="resetSessionButton">重置会话</button>
-            </div>
-            <div class="inspection-actions">
-              <button id="exportJsonButton" type="button" data-i18n="exportJsonButton">导出 JSON</button>
-              <button id="exportTextButton" type="button" data-i18n="exportTextButton">导出文本报告</button>
-            </div>
-            <p class="inspection-meta" id="inspectionProgress">Inspection status: 0/0 (0%)</p>
-            <p class="inspection-meta" id="inspectionRemaining">Missing keys: -</p>
-            <div class="anomaly-box">
-              <p class="inspection-title" id="anomalyTitle" data-i18n="anomalyTitle">异常检测</p>
-              <ul id="anomalyList" class="anomaly-list">
-                <li class="placeholder" id="anomalyPlaceholder" data-i18n="anomalyPlaceholder">暂无异常</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        <section class="panel panel-stats">
-          <div class="panel-head">
-            <h2 id="statsTitle" data-i18n="statsTitle">测试状态</h2>
-            <p id="statsHint" data-i18n="statsHint">实时显示监听数据</p>
-          </div>
-          <div class="stats-grid">
-            <article>
-              <span class="stat-label" id="totalPressesLabel" data-i18n="totalPressesLabel">按下总次数</span>
-              <strong id="totalPresses">0</strong>
-            </article>
-            <article>
-              <span class="stat-label" id="activeCountLabel" data-i18n="activeCountLabel">当前按住</span>
-              <strong id="activeCount">0</strong>
-            </article>
-            <article>
-              <span class="stat-label" id="lastCodeLabel" data-i18n="lastCodeLabel">最近按键</span>
-              <strong id="lastCode">-</strong>
-            </article>
-            <article id="responseSpeedCard">
-              <span class="stat-label" id="responseSpeedLabel" data-i18n="responseSpeedLabel">响应速度</span>
-              <strong id="responseSpeed">-</strong>
-              <small class="stat-meta" id="responseMeta">等待输入</small>
-            </article>
-          </div>
-          <div class="lock-grid">
-            <div class="lock-item" data-lock="CapsLock">
-              <span>Caps Lock</span>
-              <b>OFF</b>
-            </div>
-            <div class="lock-item" data-lock="NumLock">
-              <span>Num Lock</span>
-              <b>OFF</b>
-            </div>
-            <div class="lock-item" data-lock="ScrollLock">
-              <span>Scroll Lock</span>
-              <b>OFF</b>
-            </div>
-          </div>
-        </section>
-
         <section class="panel panel-history">
           <div class="panel-head">
             <h2 id="eventHistoryTitle" data-i18n="eventHistoryTitle">事件记录</h2>
@@ -296,6 +282,17 @@
           <div class="panel-head">
             <h2 id="activeKeysTitle" data-i18n="activeKeysTitle">当前按住的键</h2>
             <p id="activeKeysHint" data-i18n="activeKeysHint">支持多键同时检测</p>
+          </div>
+          <div class="active-overview">
+            <article class="active-overview-card">
+              <span class="stat-label" id="activeCountLabel" data-i18n="activeCountLabel">当前按住</span>
+              <strong id="activeCount">0</strong>
+            </article>
+            <article class="active-overview-card" id="nkroCard">
+              <span class="stat-label" id="nkroLabel" data-i18n="nkroLabel">无冲检测</span>
+              <strong id="nkroLevel">1KRO</strong>
+              <small class="stat-meta" id="nkroMeta">继续同时按下多个按键以评估无冲能力</small>
+            </article>
           </div>
           <div class="active-list" id="activeKeys">
             <span class="placeholder-chip">暂无</span>

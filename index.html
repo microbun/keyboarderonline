@@ -3,21 +3,27 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Keyboader Tester</title>
+    <title id="pageTitle">Keyboader Tester</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
     <div class="page-shell">
       <header class="hero">
         <div class="hero-copy">
-          <p class="eyebrow">Keyboard Inspector</p>
-          <h1>实时检查每一个按键是否正常触发</h1>
-          <p class="hero-text">
+          <div class="hero-topbar">
+            <p class="eyebrow" id="eyebrowText">Keyboard Inspector</p>
+            <label class="language-switcher" for="languageSelect">
+              <span id="languageLabel">语言</span>
+              <select id="languageSelect" aria-label="Language selector"></select>
+            </label>
+          </div>
+          <h1 id="heroTitle">实时检查每一个按键是否正常触发</h1>
+          <p class="hero-text" id="heroText">
             按下键盘任意按键，页面会同步显示物理位置、事件状态、按下次数和最近操作记录，适合排查失灵、连击和映射异常。
           </p>
         </div>
         <div class="hero-card">
-          <div class="card-label">Last Event</div>
+          <div class="card-label" id="lastEventLabel">Last Event</div>
           <div class="last-key" id="lastKeyLabel">等待输入</div>
           <div class="last-key-meta" id="lastKeyMeta">code / key / location</div>
           <div class="active-hint" id="activeHint">当前没有按住的按键</div>
@@ -27,9 +33,9 @@
       <main class="dashboard">
         <section class="panel panel-keyboard">
           <div class="panel-head">
-            <h2>键盘布局</h2>
+            <h2 id="keyboardLayoutTitle">键盘布局</h2>
             <div class="panel-head-actions">
-              <p>高亮表示监听到对应按键事件</p>
+              <p id="keyboardLayoutHint">高亮表示监听到对应按键事件</p>
               <button id="resetDetectedButton" type="button">重置检测</button>
             </div>
           </div>
@@ -176,24 +182,24 @@
 
         <section class="panel panel-stats">
           <div class="panel-head">
-            <h2>测试状态</h2>
-            <p>实时显示监听数据</p>
+            <h2 id="statsTitle">测试状态</h2>
+            <p id="statsHint">实时显示监听数据</p>
           </div>
           <div class="stats-grid">
             <article>
-              <span class="stat-label">按下总次数</span>
+              <span class="stat-label" id="totalPressesLabel">按下总次数</span>
               <strong id="totalPresses">0</strong>
             </article>
             <article>
-              <span class="stat-label">当前按住</span>
+              <span class="stat-label" id="activeCountLabel">当前按住</span>
               <strong id="activeCount">0</strong>
             </article>
             <article>
-              <span class="stat-label">最近按键</span>
+              <span class="stat-label" id="lastCodeLabel">最近按键</span>
               <strong id="lastCode">-</strong>
             </article>
             <article id="responseSpeedCard">
-              <span class="stat-label">响应速度</span>
+              <span class="stat-label" id="responseSpeedLabel">响应速度</span>
               <strong id="responseSpeed">-</strong>
               <small class="stat-meta" id="responseMeta">等待输入</small>
             </article>
@@ -216,7 +222,7 @@
 
         <section class="panel panel-history">
           <div class="panel-head">
-            <h2>事件记录</h2>
+            <h2 id="eventHistoryTitle">事件记录</h2>
             <button id="clearLogButton" type="button">清空记录</button>
           </div>
           <ul class="event-log" id="eventLog">
@@ -226,8 +232,8 @@
 
         <section class="panel panel-active">
           <div class="panel-head">
-            <h2>当前按住的键</h2>
-            <p>支持多键同时检测</p>
+            <h2 id="activeKeysTitle">当前按住的键</h2>
+            <p id="activeKeysHint">支持多键同时检测</p>
           </div>
           <div class="active-list" id="activeKeys">
             <span class="placeholder-chip">暂无</span>

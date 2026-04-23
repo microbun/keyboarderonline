@@ -1020,7 +1020,7 @@ const translations = {
   },
 };
 
-const defaultLanguage = "zh-CN";
+const defaultLanguage = "en";
 const supportedLanguages = Object.keys(translations);
 const explicitLanguageStorageKey = "keyboader-language";
 
@@ -1202,7 +1202,7 @@ function t(key, replacements = {}) {
 
 function getPreferredLanguage() {
   const storedLanguage = normalizeLanguage(localStorage.getItem(explicitLanguageStorageKey));
-  return storedLanguage || detectAutoLanguage();
+  return storedLanguage || defaultLanguage;
 }
 
 function refreshStaticText() {
@@ -1606,7 +1606,7 @@ if (languageSelectElement) {
   });
 }
 
-selectedLanguage = normalizeLanguage(localStorage.getItem(explicitLanguageStorageKey)) || "auto";
+selectedLanguage = normalizeLanguage(localStorage.getItem(explicitLanguageStorageKey)) || defaultLanguage;
 resolvedLanguage = getPreferredLanguage();
 if (languageSelectElement) {
   languageSelectElement.value = selectedLanguage;

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Keyboader Tester</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Keyboard Inspector</p>
+          <h1>实时检查每一个按键是否正常触发</h1>
+          <p class="hero-text">
+            按下键盘任意按键，页面会同步显示物理位置、事件状态、按下次数和最近操作记录，适合排查失灵、连击和映射异常。
+          </p>
+        </div>
+        <div class="hero-card">
+          <div class="card-label">Last Event</div>
+          <div class="last-key" id="lastKeyLabel">等待输入</div>
+          <div class="last-key-meta" id="lastKeyMeta">code / key / location</div>
+          <div class="active-hint" id="activeHint">当前没有按住的按键</div>
+        </div>
+      </header>
+
+      <main class="dashboard">
+        <section class="panel panel-keyboard">
+          <div class="panel-head">
+            <h2>键盘布局</h2>
+            <div class="panel-head-actions">
+              <p>高亮表示监听到对应按键事件</p>
+              <button id="resetDetectedButton" type="button">重置检测</button>
+            </div>
+          </div>
+
+          <div class="keyboard-layout" id="keyboardLayout">
+            <div class="keyboard-main">
+              <div class="kb-row kb-row-function">
+                <button class="key key-u100" data-code="Escape"><span>Esc</span></button>
+                <span class="key-spacer key-spacer-050" aria-hidden="true"></span>
+                <button class="key" data-code="F1"><span>F1</span></button>
+                <button class="key" data-code="F2"><span>F2</span></button>
+                <button class="key" data-code="F3"><span>F3</span></button>
+                <button class="key" data-code="F4"><span>F4</span></button>
+                <span class="key-spacer key-spacer-050" aria-hidden="true"></span>
+                <button class="key" data-code="F5"><span>F5</span></button>
+                <button class="key" data-code="F6"><span>F6</span></button>
+                <button class="key" data-code="F7"><span>F7</span></button>
+                <button class="key" data-code="F8"><span>F8</span></button>
+                <span class="key-spacer key-spacer-050" aria-hidden="true"></span>
+                <button class="key" data-code="F9"><span>F9</span></button>
+                <button class="key" data-code="F10"><span>F10</span></button>
+                <button class="key" data-code="F11"><span>F11</span></button>
+                <button class="key" data-code="F12"><span>F12</span></button>
+              </div>
+
+              <div class="kb-row">
+                <button class="key" data-code="Backquote"><span>`</span><small>~</small></button>
+                <button class="key" data-code="Digit1"><span>1</span><small>!</small></button>
+                <button class="key" data-code="Digit2"><span>2</span><small>@</small></button>
+                <button class="key" data-code="Digit3"><span>3</span><small>#</small></button>
+                <button class="key" data-code="Digit4"><span>4</span><small>$</small></button>
+                <button class="key" data-code="Digit5"><span>5</span><small>%</small></button>
+                <button class="key" data-code="Digit6"><span>6</span><small>^</small></button>
+                <button class="key" data-code="Digit7"><span>7</span><small>&amp;</small></button>
+                <button class="key" data-code="Digit8"><span>8</span><small>*</small></button>
+                <button class="key" data-code="Digit9"><span>9</span><small>(</small></button>
+                <button class="key" data-code="Digit0"><span>0</span><small>)</small></button>
+                <button class="key" data-code="Minus"><span>-</span><small>_</small></button>
+                <button class="key" data-code="Equal"><span>=</span><small>+</small></button>
+                <button class="key key-u200" data-code="Backspace"><span>Backspace</span></button>
+              </div>
+
+              <div class="kb-row">
+                <button class="key key-u150" data-code="Tab"><span>Tab</span></button>
+                <button class="key" data-code="KeyQ"><span>Q</span></button>
+                <button class="key" data-code="KeyW"><span>W</span></button>
+                <button class="key" data-code="KeyE"><span>E</span></button>
+                <button class="key" data-code="KeyR"><span>R</span></button>
+                <button class="key" data-code="KeyT"><span>T</span></button>
+                <button class="key" data-code="KeyY"><span>Y</span></button>
+                <button class="key" data-code="KeyU"><span>U</span></button>
+                <button class="key" data-code="KeyI"><span>I</span></button>
+                <button class="key" data-code="KeyO"><span>O</span></button>
+                <button class="key" data-code="KeyP"><span>P</span></button>
+                <button class="key" data-code="BracketLeft"><span>[</span><small>{</small></button>
+                <button class="key" data-code="BracketRight"><span>]</span><small>}</small></button>
+                <button class="key key-u150" data-code="Backslash"><span>\</span><small>|</small></button>
+              </div>
+
+              <div class="kb-row">
+                <button class="key key-u175" data-code="CapsLock"><span>Caps Lock</span></button>
+                <button class="key" data-code="KeyA"><span>A</span></button>
+                <button class="key" data-code="KeyS"><span>S</span></button>
+                <button class="key" data-code="KeyD"><span>D</span></button>
+                <button class="key" data-code="KeyF"><span>F</span></button>
+                <button class="key" data-code="KeyG"><span>G</span></button>
+                <button class="key" data-code="KeyH"><span>H</span></button>
+                <button class="key" data-code="KeyJ"><span>J</span></button>
+                <button class="key" data-code="KeyK"><span>K</span></button>
+                <button class="key" data-code="KeyL"><span>L</span></button>
+                <button class="key" data-code="Semicolon"><span>;</span><small>:</small></button>
+                <button class="key" data-code="Quote"><span>'</span><small>"</small></button>
+                <button class="key key-u225" data-code="Enter"><span>Enter</span></button>
+              </div>
+
+              <div class="kb-row">
+                <button class="key key-u225" data-code="ShiftLeft"><span>Shift</span></button>
+                <button class="key" data-code="KeyZ"><span>Z</span></button>
+                <button class="key" data-code="KeyX"><span>X</span></button>
+                <button class="key" data-code="KeyC"><span>C</span></button>
+                <button class="key" data-code="KeyV"><span>V</span></button>
+                <button class="key" data-code="KeyB"><span>B</span></button>
+                <button class="key" data-code="KeyN"><span>N</span></button>
+                <button class="key" data-code="KeyM"><span>M</span></button>
+                <button class="key" data-code="Comma"><span>,</span><small>&lt;</small></button>
+                <button class="key" data-code="Period"><span>.</span><small>&gt;</small></button>
+                <button class="key" data-code="Slash"><span>/</span><small>?</small></button>
+                <button class="key key-u275" data-code="ShiftRight"><span>Shift</span></button>
+              </div>
+
+              <div class="kb-row">
+                <button class="key key-control" data-code="ControlLeft"><span>Ctrl</span></button>
+                <button class="key key-meta" data-code="MetaLeft"><span>Win</span></button>
+                <button class="key key-alt" data-code="AltLeft"><span>Alt</span></button>
+                <button class="key key-u625" data-code="Space"><span>Space</span></button>
+                <button class="key key-alt" data-code="AltRight"><span>Alt</span></button>
+                <button class="key key-meta" data-code="MetaRight"><span>Win</span></button>
+                <button class="key key-menu" data-code="ContextMenu"><span>Menu</span></button>
+                <button class="key key-control" data-code="ControlRight"><span>Ctrl</span></button>
+              </div>
+            </div>
+
+            <div class="keyboard-side">
+              <button class="key nav-printscreen" data-code="PrintScreen"><span>PrtSc</span></button>
+              <button class="key nav-scrolllock" data-code="ScrollLock"><span>Scroll</span></button>
+              <button class="key nav-pause" data-code="Pause"><span>Pause</span></button>
+              <button class="key nav-insert" data-code="Insert"><span>Ins</span></button>
+              <button class="key nav-home" data-code="Home"><span>Home</span></button>
+              <button class="key nav-pageup" data-code="PageUp"><span>PgUp</span></button>
+              <button class="key nav-delete" data-code="Delete"><span>Del</span></button>
+              <button class="key nav-end" data-code="End"><span>End</span></button>
+              <button class="key nav-pagedown" data-code="PageDown"><span>PgDn</span></button>
+              <button class="key nav-up" data-code="ArrowUp"><span>↑</span></button>
+              <button class="key nav-left" data-code="ArrowLeft"><span>←</span></button>
+              <button class="key nav-down" data-code="ArrowDown"><span>↓</span></button>
+              <button class="key nav-right" data-code="ArrowRight"><span>→</span></button>
+            </div>
+
+            <div class="keyboard-numpad">
+              <button class="key numpad-num" data-code="NumLock"><span>Num</span></button>
+              <button class="key numpad-divide" data-code="NumpadDivide"><span>/</span></button>
+              <button class="key numpad-multiply" data-code="NumpadMultiply"><span>*</span></button>
+              <button class="key numpad-subtract" data-code="NumpadSubtract"><span>-</span></button>
+
+              <button class="key numpad-7" data-code="Numpad7"><span>7</span></button>
+              <button class="key numpad-8" data-code="Numpad8"><span>8</span></button>
+              <button class="key numpad-9" data-code="Numpad9"><span>9</span></button>
+              <button class="key numpad-add" data-code="NumpadAdd"><span>+</span></button>
+
+              <button class="key numpad-4" data-code="Numpad4"><span>4</span></button>
+              <button class="key numpad-5" data-code="Numpad5"><span>5</span></button>
+              <button class="key numpad-6" data-code="Numpad6"><span>6</span></button>
+
+              <button class="key numpad-1" data-code="Numpad1"><span>1</span></button>
+              <button class="key numpad-2" data-code="Numpad2"><span>2</span></button>
+              <button class="key numpad-3" data-code="Numpad3"><span>3</span></button>
+              <button class="key numpad-enter" data-code="NumpadEnter"><span>Enter</span></button>
+
+              <button class="key numpad-0" data-code="Numpad0"><span>0</span></button>
+              <button class="key numpad-decimal" data-code="NumpadDecimal"><span>.</span></button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel panel-stats">
+          <div class="panel-head">
+            <h2>测试状态</h2>
+            <p>实时显示监听数据</p>
+          </div>
+          <div class="stats-grid">
+            <article>
+              <span class="stat-label">按下总次数</span>
+              <strong id="totalPresses">0</strong>
+            </article>
+            <article>
+              <span class="stat-label">当前按住</span>
+              <strong id="activeCount">0</strong>
+            </article>
+            <article>
+              <span class="stat-label">最近按键</span>
+              <strong id="lastCode">-</strong>
+            </article>
+            <article id="responseSpeedCard">
+              <span class="stat-label">响应速度</span>
+              <strong id="responseSpeed">-</strong>
+              <small class="stat-meta" id="responseMeta">等待输入</small>
+            </article>
+          </div>
+          <div class="lock-grid">
+            <div class="lock-item" data-lock="CapsLock">
+              <span>Caps Lock</span>
+              <b>OFF</b>
+            </div>
+            <div class="lock-item" data-lock="NumLock">
+              <span>Num Lock</span>
+              <b>OFF</b>
+            </div>
+            <div class="lock-item" data-lock="ScrollLock">
+              <span>Scroll Lock</span>
+              <b>OFF</b>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel panel-history">
+          <div class="panel-head">
+            <h2>事件记录</h2>
+            <button id="clearLogButton" type="button">清空记录</button>
+          </div>
+          <ul class="event-log" id="eventLog">
+            <li class="placeholder">按下任意按键后，这里会显示最近 12 条事件记录。</li>
+          </ul>
+        </section>
+
+        <section class="panel panel-active">
+          <div class="panel-head">
+            <h2>当前按住的键</h2>
+            <p>支持多键同时检测</p>
+          </div>
+          <div class="active-list" id="activeKeys">
+            <span class="placeholder-chip">暂无</span>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <template id="logItemTemplate">
+      <li class="log-entry">
+        <span class="log-type"></span>
+        <span class="log-code"></span>
+        <span class="log-key"></span>
+        <span class="log-extra"></span>
+      </li>
+    </template>
+
+    <script src="./script.js"></script>
+  </body>
+  </html>

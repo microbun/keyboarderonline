@@ -35,6 +35,17 @@ const exportTextButton = document.querySelector("#exportTextButton");
 const inspectionProgressElement = document.querySelector("#inspectionProgress");
 const inspectionRemainingElement = document.querySelector("#inspectionRemaining");
 const anomalyListElement = document.querySelector("#anomalyList");
+const metaDescriptionElement = document.querySelector("#metaDescription");
+const metaKeywordsElement = document.querySelector("#metaKeywords");
+const canonicalElement = document.querySelector("#canonicalUrl");
+const ogTitleElement = document.querySelector("#ogTitle");
+const ogDescriptionElement = document.querySelector("#ogDescription");
+const ogUrlElement = document.querySelector("#ogUrl");
+const ogLocaleElement = document.querySelector("#ogLocale");
+const twitterTitleElement = document.querySelector("#twitterTitle");
+const twitterDescriptionElement = document.querySelector("#twitterDescription");
+const seoStructuredDataElement = document.querySelector("#seoStructuredData");
+const alternateLinkElements = Array.from(document.querySelectorAll("link[rel='alternate'][data-hreflang]"));
 const lockElements = new Map(
   Array.from(document.querySelectorAll("[data-lock]")).map((element) => [element.dataset.lock, element]),
 );
@@ -411,6 +422,102 @@ function getPreferredLanguage() {
   return storedLanguage || defaultLanguage;
 }
 
+function toOpenGraphLocale(languageCode) {
+  const localeMap = {
+    "zh-CN": "zh_CN",
+    en: "en_US",
+    de: "de_DE",
+    fr: "fr_FR",
+    ja: "ja_JP",
+  };
+
+  return localeMap[languageCode] || "en_US";
+}
+
+function buildLocalizedUrl(languageCode) {
+  const url = new URL(window.location.href);
+
+  if (languageCode) {
+    url.searchParams.set("lang", languageCode);
+  } else {
+    url.searchParams.delete("lang");
+  }
+
+  return url.toString();
+}
+
+function updateSeoMetadata() {
+  const title = t("pageTitle");
+  const description = t("seoDescription");
+  const keywords = t("seoKeywords");
+  const explicitLanguage = selectedLanguage === "auto" ? null : resolvedLanguage;
+  const canonicalUrl = buildLocalizedUrl(explicitLanguage);
+  const currentLanguage = explicitLanguage || resolvedLanguage;
+
+  if (metaDescriptionElement) {
+    metaDescriptionElement.content = description;
+  }
+
+  if (metaKeywordsElement) {
+    metaKeywordsElement.content = keywords;
+  }
+
+  if (canonicalElement) {
+    canonicalElement.href = canonicalUrl;
+  }
+
+  if (ogTitleElement) {
+    ogTitleElement.content = title;
+  }
+
+  if (ogDescriptionElement) {
+    ogDescriptionElement.content = description;
+  }
+
+  if (ogUrlElement) {
+    ogUrlElement.content = canonicalUrl;
+  }
+
+  if (ogLocaleElement) {
+    ogLocaleElement.content = toOpenGraphLocale(currentLanguage);
+  }
+
+  if (twitterTitleElement) {
+    twitterTitleElement.content = title;
+  }
+
+  if (twitterDescriptionElement) {
+    twitterDescriptionElement.content = description;
+  }
+
+  alternateLinkElements.forEach((linkElement) => {
+    const hrefLang = linkElement.dataset.hreflang;
+    if (!hrefLang || hrefLang === "x-default") {
+      linkElement.href = buildLocalizedUrl(null);
+      return;
+    }
+
+    linkElement.href = buildLocalizedUrl(hrefLang);
+  });
+
+  if (seoStructuredDataElement) {
+    seoStructuredDataElement.textContent = JSON.stringify(
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        name: "Keyboader Tester",
+        applicationCategory: "UtilityApplication",
+        operatingSystem: "Web",
+        inLanguage: currentLanguage,
+        description,
+        url: canonicalUrl,
+      },
+      null,
+      2,
+    );
+  }
+}
+
 function refreshStaticText() {
   renderLanguageOptions();
   const i18nKeysInDom = Array.from(document.querySelectorAll("[data-i18n]"))
@@ -429,6 +536,7 @@ function refreshStaticText() {
 
   document.documentElement.lang = resolvedLanguage;
   document.title = t("pageTitle");
+  updateSeoMetadata();
   languageSelectElement?.setAttribute("aria-label", t("languageLabel"));
 
   if (totalPresses === 0) {

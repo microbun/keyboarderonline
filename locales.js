@@ -10,6 +10,8 @@ window.KeyboaderI18nResource = {
   translations: {
     "zh-CN": {
       pageTitle: "Keyboader Tester | 键盘按键测试",
+      seoDescription: "在线键盘按键测试工具，实时查看 key/code/位置，检测连击与卡键，并可导出完整体检报告。",
+      seoKeywords: "键盘测试,按键测试,在线键盘检测,卡键检测,连击检测,键盘诊断工具",
       languageLabel: "语言",
       languageOptionAuto: "自动",
       eyebrowText: "Keyboard Inspector",
@@ -78,6 +80,8 @@ window.KeyboaderI18nResource = {
     },
     en: {
       pageTitle: "Keyboader Tester | Keyboard Key Test",
+      seoDescription: "Online keyboard key tester to inspect key/code/location in real time, detect chatter and stuck keys, and export inspection reports.",
+      seoKeywords: "keyboard tester,key test,online keyboard diagnostic,stuck key detector,key chatter test,keyboard inspection",
       languageLabel: "Language",
       languageOptionAuto: "Auto",
       eyebrowText: "Keyboard Inspector",
@@ -146,6 +150,8 @@ window.KeyboaderI18nResource = {
     },
     de: {
       pageTitle: "Keyboader Tester | Tastaturtest",
+      seoDescription: "Online-Tastaturtester zur Echtzeitpruefung von Taste/Code/Position, Erkennung von Prellen und Haengern sowie Export von Berichten.",
+      seoKeywords: "tastaturtest,tastentest,online tastatur diagnose,haengende taste,prellen erkennen,tastatur pruefen",
       languageLabel: "Sprache",
       languageOptionAuto: "Auto",
       eyebrowText: "Tastaturinspektor",
@@ -214,6 +220,8 @@ window.KeyboaderI18nResource = {
     },
     fr: {
       pageTitle: "Keyboader Tester | Test du clavier",
+      seoDescription: "Testeur de clavier en ligne pour verifier touche/code/position en temps reel, detecter les touches bloquees et exporter des rapports.",
+      seoKeywords: "test clavier,test de touches,diagnostic clavier en ligne,touche bloquee,verification clavier,outil clavier",
       languageLabel: "Langue",
       languageOptionAuto: "Auto",
       eyebrowText: "Inspecteur de clavier",
@@ -282,6 +290,8 @@ window.KeyboaderI18nResource = {
     },
     ja: {
       pageTitle: "Keyboader Tester | キーボードテスト",
+      seoDescription: "キー・code・位置をリアルタイムで確認できるオンラインキーボードテスト。チャタリングや押しっぱなしを検出し、レポートを出力できます。",
+      seoKeywords: "キーボードテスト,キー入力テスト,オンライン診断,チャタリング検出,押しっぱなし検出,キー検査",
       languageLabel: "言語",
       languageOptionAuto: "自動",
       eyebrowText: "Keyboard Inspector",

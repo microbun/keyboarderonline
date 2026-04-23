@@ -165,7 +165,7 @@ h1 {
   inset: 12px;
   border-radius: 22px;
   background: linear-gradient(145deg, rgba(78, 230, 179, 0.18), rgba(255, 209, 102, 0.06));
-  opacity: 0.9;
+  opacity: 0.55;
 }
 
 .hero-card > * {
@@ -184,7 +184,7 @@ h1 {
 }
 
 .last-key {
-  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-size: clamp(1.5rem, 3vw, 2.4rem);
   line-height: 1;
 }
 
@@ -206,7 +206,7 @@ h1 {
 }
 
 .panel-stats {
-  grid-column: span 4;
+  grid-column: span 5;
 }
 
 .panel-history {
@@ -214,7 +214,11 @@ h1 {
 }
 
 .panel-active {
-  grid-column: span 4;
+  grid-column: span 3;
+}
+
+.panel-inspection {
+  grid-column: 1 / -1;
 }
 
 .panel-keyboard {
@@ -295,21 +299,26 @@ h1 {
 }
 
 #responseSpeed {
-  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  font-size: 1rem;
   white-space: nowrap;
   line-height: 1.15;
+  color: var(--muted);
+}
+
+#responseSpeedCard {
+  opacity: 0.82;
 }
 
 #responseSpeedCard.is-fast strong {
-  color: var(--accent);
+  color: var(--muted);
 }
 
 #responseSpeedCard.is-normal strong {
-  color: var(--accent-strong);
+  color: var(--muted);
 }
 
 #responseSpeedCard.is-slow strong {
-  color: var(--danger);
+  color: var(--muted);
 }
 
 .lock-grid {
@@ -357,9 +366,95 @@ button {
   background: rgba(255, 255, 255, 0.05);
 }
 
+#startInspectionButton,
+#resetSessionButton,
+#exportJsonButton,
+#exportTextButton {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+#startInspectionButton {
+  border-color: rgba(78, 230, 179, 0.45);
+  background: rgba(78, 230, 179, 0.14);
+}
+
+#startInspectionButton.is-running {
+  border-color: rgba(255, 209, 102, 0.5);
+  background: rgba(255, 209, 102, 0.16);
+}
+
 #resetDetectedButton:hover {
   border-color: rgba(255, 255, 255, 0.3);
   background: rgba(255, 255, 255, 0.1);
+}
+
+#startInspectionButton:hover,
+#resetSessionButton:hover,
+#exportJsonButton:hover,
+#exportTextButton:hover {
+  border-color: rgba(255, 255, 255, 0.32);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.inspection-tools {
+  margin-top: 0;
+  padding: 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(78, 230, 179, 0.3);
+  background: linear-gradient(160deg, rgba(8, 24, 41, 0.98), rgba(12, 34, 54, 0.9));
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 0.86fr);
+  column-gap: 16px;
+  row-gap: 8px;
+}
+
+.inspection-title {
+  margin: 0 0 6px;
+  font-size: 1rem;
+  color: var(--muted);
+}
+
+.inspection-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.inspection-meta {
+  margin: 6px 0;
+  font-size: 0.88rem;
+  color: #d5ebf5;
+}
+
+.anomaly-box {
+  margin-top: 0;
+  grid-column: 2;
+  grid-row: 1 / span 5;
+}
+
+.anomaly-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  max-height: 210px;
+  overflow: auto;
+}
+
+.anomaly-list li {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 123, 123, 0.38);
+  background: rgba(255, 123, 123, 0.13);
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: 0.8rem;
 }
 
 .event-log {
@@ -368,9 +463,10 @@ button {
   padding: 0;
   display: grid;
   gap: 10px;
-  max-height: 440px;
+  max-height: 300px;
   overflow: auto;
   padding-right: 4px;
+  opacity: 0.86;
 }
 
 .log-entry,
@@ -589,7 +685,7 @@ button {
 
 /* Add graphic legends for Enter/Shift. */
 .keyboard-main .key[data-code^="Shift"] span::before {
-  content: "⇧ ";
+  content: "\21E7";
   font-size: 1.14em;
   font-weight: 800;
   text-shadow: 0 0 0.85px currentColor;
@@ -597,7 +693,7 @@ button {
 }
 
 .keyboard-main .key[data-code="Enter"] span::before {
-  content: "⏎ ";
+  content: "\23CE";
   font-size: 1.3em;
   font-weight: 700;
   font-family: "Segoe UI Symbol", "Noto Sans Symbols2", sans-serif;
@@ -623,7 +719,7 @@ button {
 }
 
 .keyboard-main .key[data-code="Backspace"] span::before {
-  content: "⌫ ";
+  content: "\232B";
   font-size: 0.78rem;
   font-weight: 700;
 }
@@ -783,6 +879,16 @@ button {
   .stats-grid,
   .lock-grid {
     grid-template-columns: 1fr;
+  }
+
+  .inspection-tools {
+    grid-template-columns: 1fr;
+  }
+
+  .anomaly-box {
+    grid-column: auto;
+    grid-row: auto;
+    margin-top: 8px;
   }
 
   .hero-topbar,

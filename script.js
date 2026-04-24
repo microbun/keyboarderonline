@@ -48,6 +48,7 @@ const ogLocaleElement = document.querySelector("#ogLocale");
 const twitterTitleElement = document.querySelector("#twitterTitle");
 const twitterDescriptionElement = document.querySelector("#twitterDescription");
 const seoStructuredDataElement = document.querySelector("#seoStructuredData");
+const faqStructuredDataElement = document.querySelector("#faqStructuredData");
 const alternateLinkElements = Array.from(document.querySelectorAll("link[rel='alternate'][data-hreflang]"));
 const lockElements = new Map(
   Array.from(document.querySelectorAll("[data-lock]")).map((element) => [element.dataset.lock, element]),
@@ -535,13 +536,132 @@ function buildLocalizedUrl(languageCode) {
   return url.toString();
 }
 
+function trimToWordBoundary(text, maxLength) {
+  if (text.length <= maxLength) {
+    return text;
+  }
+
+  const shortened = text.slice(0, maxLength);
+  const lastSpaceIndex = shortened.lastIndexOf(" ");
+
+  if (lastSpaceIndex > Math.floor(maxLength * 0.6)) {
+    return `${shortened.slice(0, lastSpaceIndex)}...`;
+  }
+
+  return `${shortened.trim()}...`;
+}
+
+function normalizeSeoDescription(description, languageCode) {
+  const compactDescription = String(description || "").replace(/\s+/g, " ").trim();
+  const maxLengthByLanguage = {
+    "zh-CN": 86,
+    ja: 96,
+    en: 160,
+    de: 165,
+    fr: 165,
+  };
+  const maxLength = maxLengthByLanguage[languageCode] || 160;
+
+  if (compactDescription.length <= maxLength) {
+    return compactDescription;
+  }
+
+  if (languageCode === "zh-CN" || languageCode === "ja") {
+    return `${compactDescription.slice(0, Math.max(1, maxLength - 1)).trim()}…`;
+  }
+
+  return trimToWordBoundary(compactDescription, Math.max(1, maxLength - 3));
+}
+
+function getFaqEntries(languageCode) {
+  const faqEntriesByLanguage = {
+    "zh-CN": [
+      {
+        question: "这个在线键盘测试工具可以检测什么问题？",
+        answer:
+          "可以检测按键失灵、连击（chatter）、卡键（stuck key）和键位映射异常，并实时显示 key、code 和物理位置。",
+      },
+      {
+        question: "是否需要下载安装软件才能测试键盘？",
+        answer: "不需要。直接在浏览器打开页面即可开始测试。",
+      },
+      {
+        question: "测试结果可以导出吗？",
+        answer: "可以，支持导出 JSON 和文本报告，方便保存或发送给售后排查。",
+      },
+    ],
+    en: [
+      {
+        question: "What issues can this keyboard tester detect?",
+        answer:
+          "It can help detect dead keys, key chatter, stuck keys, and key mapping issues while showing key, code, and location in real time.",
+      },
+      {
+        question: "Do I need to install any software?",
+        answer: "No. You can run the keyboard test directly in your browser.",
+      },
+      {
+        question: "Can I export the test results?",
+        answer: "Yes. You can export both JSON and text inspection reports.",
+      },
+    ],
+    de: [
+      {
+        question: "Welche Probleme kann der Tastaturtest erkennen?",
+        answer:
+          "Er erkennt unter anderem defekte Tasten, Prellen, haengende Tasten und Zuordnungsfehler und zeigt Taste, Code und Position in Echtzeit an.",
+      },
+      {
+        question: "Muss ich eine Software installieren?",
+        answer: "Nein, der Test laeuft direkt im Browser.",
+      },
+      {
+        question: "Kann ich die Testergebnisse exportieren?",
+        answer: "Ja, als JSON oder als Textbericht.",
+      },
+    ],
+    fr: [
+      {
+        question: "Quels problemes ce testeur de clavier peut-il detecter ?",
+        answer:
+          "Il aide a detecter les touches mortes, le chatter, les touches bloquees et les erreurs de mappage, avec affichage en temps reel.",
+      },
+      {
+        question: "Faut-il installer un logiciel ?",
+        answer: "Non, le test fonctionne directement dans le navigateur.",
+      },
+      {
+        question: "Peut-on exporter les resultats ?",
+        answer: "Oui, en JSON et en rapport texte.",
+      },
+    ],
+    ja: [
+      {
+        question: "このキーボードテストで何を確認できますか？",
+        answer:
+          "キーの反応不良、チャタリング、押しっぱなし、キー配列の異常を確認でき、key・code・位置をリアルタイム表示します。",
+      },
+      {
+        question: "ソフトのインストールは必要ですか？",
+        answer: "不要です。ブラウザですぐにテストできます。",
+      },
+      {
+        question: "結果はエクスポートできますか？",
+        answer: "はい。JSON とテキストレポートを出力できます。",
+      },
+    ],
+  };
+
+  return faqEntriesByLanguage[languageCode] || faqEntriesByLanguage.en;
+}
+
 function updateSeoMetadata() {
   const title = t("pageTitle");
-  const description = t("seoDescription");
-  const keywords = t("seoKeywords");
   const explicitLanguage = selectedLanguage === "auto" ? null : resolvedLanguage;
   const canonicalUrl = buildLocalizedUrl(explicitLanguage);
   const currentLanguage = explicitLanguage || resolvedLanguage;
+  const description = normalizeSeoDescription(t("seoDescription"), currentLanguage);
+  const keywords = t("seoKeywords");
 
   if (metaDescriptionElement) {
     metaDescriptionElement.content = description;
@@ -600,6 +720,26 @@ function updateSeoMetadata() {
         inLanguage: currentLanguage,
         description,
         url: canonicalUrl,
+      },
+      null,
+      2,
+    );
+  }
+
+  if (faqStructuredDataElement) {
+    faqStructuredDataElement.textContent = JSON.stringify(
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        inLanguage: currentLanguage,
+        mainEntity: getFaqEntries(currentLanguage).map((entry) => ({
+          "@type": "Question",
+          name: entry.question,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: entry.answer,
+          },
+        })),
       },
       null,
       2,

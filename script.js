@@ -990,6 +990,20 @@ function handleKeyup(event) {
   event.preventDefault();
   const resolvedCode = resolveCode(event);
   const code = resolvedCode || event.code;
+
+  // Some OS/browser combos only surface PrintScreen on keyup.
+  // Pulse the key so users still get visual detection feedback.
+  if (code === "PrintScreen" && !pressedCodes.has(code)) {
+    const keyElement = keyElements.get(code) || ensureUnknownKey(code);
+    if (keyElement) {
+      testedCodes.add(code);
+      keyElement.classList.add("is-tested", "is-active");
+      window.setTimeout(() => {
+        keyElement.classList.remove("is-active", "is-repeating");
+      }, 180);
+    }
+  }
+
   clearFallbackRelease(code);
   clearStuckTimer(code);
   keydownStartByCode.delete(code);

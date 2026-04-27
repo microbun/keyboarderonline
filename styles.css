@@ -364,28 +364,6 @@ h1 {
   box-shadow: inset 0 0 0 1px rgba(78, 230, 179, 0.2);
 }
 
-.lock-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.lock-item {
-  padding: 14px 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.lock-item.is-on {
-  border-color: rgba(78, 230, 179, 0.4);
-  box-shadow: inset 0 0 0 1px rgba(78, 230, 179, 0.3);
-}
-
-.lock-item.is-on b {
-  color: var(--accent);
-}
-
 button {
   font: inherit;
 }
@@ -607,7 +585,7 @@ button {
   display: grid;
   width: max-content;
   min-width: 100%;
-  grid-template-columns: 850px 164px 222px;
+  grid-template-columns: max-content max-content max-content;
   gap: 16px;
   align-items: start;
 }
@@ -858,6 +836,43 @@ button {
 .key.is-repeating {
   border-color: rgba(255, 209, 102, 0.65);
   background: linear-gradient(180deg, rgba(255, 209, 102, 0.28), rgba(255, 209, 102, 0.08));
+}
+
+.key.is-lock-on:not(.is-active):not(.is-repeating) {
+  border-color: rgba(78, 230, 179, 0.5);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.13),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.14),
+    0 0 0 1px rgba(78, 230, 179, 0.14),
+    0 0 12px rgba(78, 230, 179, 0.26);
+}
+
+.key.is-lock-on:not(.is-active):not(.is-repeating)::before {
+  content: "";
+  position: absolute;
+  right: 7px;
+  top: 7px;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(78, 230, 179, 0.95);
+  box-shadow:
+    0 0 0 2px rgba(78, 230, 179, 0.2),
+    0 0 8px rgba(78, 230, 179, 0.6);
+}
+
+.key.is-lock-off:not(.is-active):not(.is-repeating)::before {
+  content: "";
+  position: absolute;
+  right: 7px;
+  top: 7px;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 123, 123, 0.95);
+  box-shadow:
+    0 0 0 2px rgba(255, 123, 123, 0.18),
+    0 0 8px rgba(255, 123, 123, 0.56);
 }
 
 .key-tab,

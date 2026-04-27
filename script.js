@@ -973,14 +973,21 @@ function updateActiveKeys() {
 function updateLockState(event) {
   ["CapsLock", "NumLock", "ScrollLock"].forEach((lockName) => {
     const lockElement = lockElements.get(lockName);
+    const lockKeyElement = keyElements.get(lockName);
 
-    if (!lockElement) {
-      return;
+    const isOn = typeof event?.getModifierState === "function"
+      ? event.getModifierState(lockName)
+      : lockElement?.classList.contains("is-on") || false;
+
+    if (lockElement) {
+      lockElement.classList.toggle("is-on", isOn);
+      lockElement.querySelector("b").textContent = isOn ? t("on") : t("off");
     }
 
-    const isOn = typeof event?.getModifierState === "function" ? event.getModifierState(lockName) : lockElement.classList.contains("is-on");
-    lockElement.classList.toggle("is-on", isOn);
-    lockElement.querySelector("b").textContent = isOn ? t("on") : t("off");
+    if (lockKeyElement) {
+      lockKeyElement.classList.toggle("is-lock-on", isOn);
+      lockKeyElement.classList.toggle("is-lock-off", !isOn);
+    }
   });
 }
 

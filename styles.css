@@ -67,7 +67,7 @@ body::after {
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.6fr) minmax(280px, 0.8fr);
+  grid-template-columns: 1fr;
   gap: 20px;
   align-items: stretch;
   margin-bottom: 20px;
@@ -210,10 +210,14 @@ h1 {
 }
 
 .panel-history {
-  grid-column: span 8;
+  grid-column: span 4;
 }
 
 .panel-active {
+  grid-column: span 4;
+}
+
+.panel-last-event {
   grid-column: span 4;
 }
 
@@ -243,6 +247,7 @@ h1 {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .stats-grid {
@@ -483,9 +488,17 @@ button {
 }
 
 .inspection-meta {
-  margin: 6px 0;
-  font-size: 0.88rem;
+  margin: 0;
+  font-size: 0.85rem;
   color: #d5ebf5;
+  white-space: nowrap;
+  line-height: 1;
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(78, 230, 179, 0.34);
+  background: linear-gradient(135deg, rgba(78, 230, 179, 0.16), rgba(78, 230, 179, 0.08));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+  font-family: "Cascadia Code", Consolas, monospace;
 }
 
 .anomaly-box {
@@ -929,6 +942,7 @@ button {
   }
 
   .panel-stats,
+  .panel-last-event,
   .panel-history,
   .panel-active,
   .panel-keyboard {

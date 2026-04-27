@@ -32,7 +32,6 @@ const clearLogButton = document.querySelector("#clearLogButton");
 const resetDetectedButton = document.querySelector("#resetDetectedButton");
 const logItemTemplate = document.querySelector("#logItemTemplate");
 const startInspectionButton = document.querySelector("#startInspectionButton");
-const resetSessionButton = document.querySelector("#resetSessionButton");
 const exportJsonButton = document.querySelector("#exportJsonButton");
 const exportTextButton = document.querySelector("#exportTextButton");
 const inspectionProgressElement = document.querySelector("#inspectionProgress");
@@ -160,7 +159,7 @@ function getAnomalyRecord(code) {
 }
 
 function renderInspectionStatus() {
-  if (!inspectionProgressElement || !inspectionRemainingElement) {
+  if (!inspectionProgressElement) {
     return;
   }
 
@@ -168,19 +167,19 @@ function renderInspectionStatus() {
   const completed = inspectedCodes.size;
   const percent = requiredTotal === 0 ? 0 : Math.round((completed / requiredTotal) * 100);
 
-  inspectionProgressElement.textContent = inspectionRunning
-    ? t("inspectionProgressRunning", { completed, requiredTotal, percent })
-    : t("inspectionProgressIdle", { completed, requiredTotal, percent });
+  inspectionProgressElement.textContent = t("inspectionProgressIdle", { completed, requiredTotal, percent });
 
   const remaining = Array.from(inspectionRequiredCodes)
     .filter((code) => !inspectedCodes.has(code))
     .slice(0, 8);
 
-  inspectionRemainingElement.textContent = remaining.length > 0
-    ? t("inspectionRemainingPrefix", {
-      keys: `${remaining.join(", ")}${requiredTotal - completed > 8 ? " ..." : ""}`,
-    })
-    : t("inspectionRemainingDone");
+  if (inspectionRemainingElement) {
+    inspectionRemainingElement.textContent = remaining.length > 0
+      ? t("inspectionRemainingPrefix", {
+        keys: `${remaining.join(", ")}${requiredTotal - completed > 8 ? " ..." : ""}`,
+      })
+      : t("inspectionRemainingDone");
+  }
 
   if (startInspectionButton) {
     startInspectionButton.classList.toggle("is-running", inspectionRunning);
@@ -230,15 +229,11 @@ function beginInspection() {
 }
 
 function markInspectedCode(code) {
-  if (!inspectionRunning || !inspectionRequiredCodes.has(code)) {
+  if (!inspectionRequiredCodes.has(code)) {
     return;
   }
 
   inspectedCodes.add(code);
-
-  if (inspectedCodes.size === inspectionRequiredCodes.size) {
-    inspectionRunning = false;
-  }
 
   renderInspectionStatus();
 }
@@ -1196,15 +1191,14 @@ clearLogButton.addEventListener("click", () => {
 });
 
 if (resetDetectedButton) {
-  resetDetectedButton.addEventListener("click", resetDetectedState);
+  resetDetectedButton.addEventListener("click", () => {
+    resetDetectedState();
+    resetInspectionSession();
+  });
 }
 
 if (startInspectionButton) {
   startInspectionButton.addEventListener("click", beginInspection);
-}
-
-if (resetSessionButton) {
-  resetSessionButton.addEventListener("click", resetInspectionSession);
 }
 
 if (exportJsonButton) {

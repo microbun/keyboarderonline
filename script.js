@@ -1184,6 +1184,53 @@ function resetDetectedState() {
   testedCodes.clear();
 }
 
+function resetLiveMetrics() {
+  totalPresses = 0;
+  responseSampleCount = 0;
+  responseAverage = 0;
+
+  if (pendingResponseFrame) {
+    cancelAnimationFrame(pendingResponseFrame);
+    pendingResponseFrame = 0;
+  }
+
+  if (totalPressesElement) {
+    totalPressesElement.textContent = "0";
+  }
+
+  if (responseSpeedElement) {
+    responseSpeedElement.textContent = "-";
+  }
+
+  if (responseMetaElement) {
+    responseMetaElement.textContent = t("responseMetaIdle");
+  }
+
+  responseSpeedCardElement?.classList.remove("is-fast", "is-normal", "is-slow");
+}
+
+function resetLastEventDisplay() {
+  if (lastKeyLabelElement) {
+    lastKeyLabelElement.textContent = t("waitingInput");
+  }
+
+  if (lastKeyMetaElement) {
+    lastKeyMetaElement.textContent = t("lastKeyMetaIdle");
+  }
+
+  if (lastCodeElement) {
+    lastCodeElement.textContent = "-";
+  }
+}
+
+function clearEventLog() {
+  if (!eventLogElement) {
+    return;
+  }
+
+  eventLogElement.innerHTML = `<li class="placeholder">${t("eventLogPlaceholder")}</li>`;
+}
+
 document.addEventListener("keydown", handleKeydown, true);
 document.addEventListener("keyup", handleKeyup, true);
 window.addEventListener("blur", resetPressedState);
@@ -1193,14 +1240,17 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 
-clearLogButton.addEventListener("click", () => {
-  eventLogElement.innerHTML = `<li class="placeholder">${t("eventLogPlaceholder")}</li>`;
-});
+if (clearLogButton) {
+  clearLogButton.addEventListener("click", clearEventLog);
+}
 
 if (resetDetectedButton) {
   resetDetectedButton.addEventListener("click", () => {
     resetDetectedState();
+    resetLiveMetrics();
+    resetLastEventDisplay();
     resetInspectionSession();
+    clearEventLog();
   });
 }
 

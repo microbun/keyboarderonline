@@ -1281,4 +1281,27 @@ refreshStaticText();
 updateActiveKeys();
 renderInspectionStatus();
 renderAnomalyList();
+
+// ── Theme switcher ──────────────────────────────────────────────────────────
+const themeStorageKey = "keyboader-theme";
+const validThemes = ["teal", "purple", "blue", "orange"];
+
+function applyTheme(theme) {
+  const resolved = validThemes.includes(theme) ? theme : "teal";
+  if (resolved === "teal") {
+    document.documentElement.removeAttribute("data-theme");
+  } else {
+    document.documentElement.setAttribute("data-theme", resolved);
+  }
+  document.querySelectorAll(".theme-swatch").forEach((btn) => {
+    btn.classList.toggle("is-active", btn.dataset.theme === resolved);
+  });
+  localStorage.setItem(themeStorageKey, resolved);
+}
+
+document.querySelectorAll(".theme-swatch").forEach((btn) => {
+  btn.addEventListener("click", () => applyTheme(btn.dataset.theme));
+});
+
+applyTheme(localStorage.getItem(themeStorageKey) || "teal");
 renderNkroState();

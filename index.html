@@ -94,10 +94,21 @@
         <div class="hero-copy">
           <div class="hero-topbar">
             <p class="eyebrow" id="eyebrowText" data-i18n="eyebrowText">Keyboard Inspector</p>
-            <label class="language-switcher" for="languageSelect">
-              <span id="languageLabel" data-i18n="languageLabel">语言</span>
-              <select id="languageSelect" aria-label="Language selector"></select>
-            </label>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+              <div class="theme-switcher" aria-label="Theme">
+                <span id="themeLabel">主题</span>
+                <div class="theme-swatches" id="themeSwatches">
+                  <button class="theme-swatch is-active" data-theme="teal" title="Teal" aria-label="Teal theme"></button>
+                  <button class="theme-swatch" data-theme="purple" title="Purple" aria-label="Purple theme"></button>
+                  <button class="theme-swatch" data-theme="blue" title="Blue" aria-label="Blue theme"></button>
+                  <button class="theme-swatch" data-theme="orange" title="Orange" aria-label="Orange theme"></button>
+                </div>
+              </div>
+              <label class="language-switcher" for="languageSelect">
+                <span id="languageLabel" data-i18n="languageLabel">语言</span>
+                <select id="languageSelect" aria-label="Language selector"></select>
+              </label>
+            </div>
           </div>
           <h1 id="heroTitle" data-i18n="heroTitle">实时检查每一个按键是否正常触发</h1>
           <p class="hero-text" id="heroText" data-i18n="heroText">
